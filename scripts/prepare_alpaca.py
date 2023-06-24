@@ -14,11 +14,12 @@ sys.path.append(str(wd))
 
 from lit_gpt.tokenizer import Tokenizer
 
-DATA_FILE_URL = "https://raw.githubusercontent.com/tloen/alpaca-lora/main/alpaca_data_cleaned_archive.json"
+# DATA_FILE_URL = "https://raw.githubusercontent.com/tloen/alpaca-lora/main/alpaca_data_cleaned_archive.json"
+DATA_FILE_URL = "https://raw.githubusercontent.com/Nikhil-Paleti/lit-llama/main/cleaned_llm_dataset.json"
 DATA_FILE_NAME = "alpaca_data_cleaned_archive.json"
 DESTINATION_PATH = Path("data/alpaca")
-CHECKPOINT_DIR = Path("checkpoints/stabilityai/stablelm-base-alpha-3b")
-TEST_SPLIT_SIZE = 2000
+CHECKPOINT_DIR = Path("checkpoints/togethercomputer/RedPajama-INCITE-Instruct-3B-v1")
+TEST_SPLIT_SIZE = 0 # 2000
 IGNORE_INDEX = -1
 MASK_INPUTS = False  # as in alpaca-lora
 SEED = 42
@@ -85,7 +86,7 @@ def prepare(
             mask_inputs=mask_inputs,
             ignore_index=ignore_index,
         )
-        for sample in tqdm(test_set)
+        for sample in tqdm(train_set)
     ]
     torch.save(test_set, destination_path / "test.pt")
 
@@ -150,10 +151,15 @@ def generate_prompt(example):
             f"### Instruction:\n{example['instruction']}\n\n### Input:\n{example['input']}\n\n### Response:"
         )
     return (
-        "Below is an instruction that describes a task. "
-        "Write a response that appropriately completes the request.\n\n"
+        "Below is a state in an environment "
+        "estimate a response that appropriately completes the request.\n\n"
         f"### Instruction:\n{example['instruction']}\n\n### Response:"
     )
+    # return (
+    #     "Below is an instruction that describes a task. "
+    #     "Write a response that appropriately completes the request.\n\n"
+    #     f"### Instruction:\n{example['instruction']}\n\n### Response:"
+    # )
 
 
 if __name__ == "__main__":
